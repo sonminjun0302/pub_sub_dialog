@@ -1,6 +1,5 @@
 #GPIO제어 모듈 불러오기
 import rospy
-from std_srvs.srv import SetBool
 import RPi.GPIO as GPIO
 #시간 모듈 불러오기
 from time import sleep
