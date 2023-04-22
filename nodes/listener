@@ -1,28 +1,28 @@
 #!/usr/bin/env python
-#클래스 불러오기
-import motor,led
-#GPIO제어/시간 모듈 불러오기
-import rospy
-import RPi.GPIO as GPIO
-from time import sleep
-#인스턴스 생성(괄호안은 핀번호)
-FM=motor.Motor(11,22,27)
-RM=motor.Motor(17,9,10)
-FL=led.Led(4)
-RL=led.Led(6)
-
 import rospy
 from std_msgs.msg import String
+from std_srvs.srv import SetBool
+import RPi.GPIO as GPIO
+
+LED_GPIO = 20
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id()+"I heard %s",data.data)
-    FL.on()
-
+    
+def set_led_state_callback(req):
+    GPIO.output(LED_GPIO, req.data)
+    return { 'success': True,
+            'message': 'Successfully changed LED state' }
 
 def listener():
     rospy.init_node("listener",anonymous=True)
     rospy.Subscriber("chatter",String,callback)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(LED_GPIO, GPIO.OUT)
+    rospy.Service("ser_led_state",SetBool,set_led_state_callback)
+    rospy.loginfo("service server started. ready to get requests.")
     rospy.spin()
+    GPIO.cleanup()
 
 if __name__=="__main__":
     listener()
