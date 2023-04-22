@@ -6,8 +6,8 @@
   I am happy
   </description>
   <license>Apache 2.0</license>
-  <author email= "asdf@gmail.com">jun</author>
-  <maintainer email= "asdf@gamil.com">jun</maintainer>
+  <author email= "sonminjun0302@gmail.com">jun</author>
+  <maintainer email= "sonminjun0302@gamil.com">jun</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
