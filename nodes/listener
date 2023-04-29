@@ -14,11 +14,7 @@ def set_led_state_callback(req):
     return {'success':True,'message':'Successfully changed LED state'}
 
 def listener():
-    rospy.init_node("listener",anonymous=True)
-    rospy.Subscriber("chatter",String,callback)
-    rospy.spin()
-
-if __name__=="__main__":
+    rospy.Subscriber("chatter",String,set_led_state_callback)
     rospy.init_node("led_actuator")
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(LED_GPIO,GPIO.OUT)
@@ -26,4 +22,6 @@ if __name__=="__main__":
     rospy.loginfo("Service server started. Ready to get requests.")
     rospy.spin()
     GPIO.cleanup()
+
+if __name__=="__main__":
     listener()
