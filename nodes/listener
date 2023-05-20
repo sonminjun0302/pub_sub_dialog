@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy
+import RPi.GPIO as GPIO
+from std_msgs.msg import String
+import time
+
+led_pin=20
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(led_pin,GPIO.OUT)
+GPIO.output(led_pin,0)
+
+def led_callback(data):
+    if data.data == "1":
+        rospy.loginfo('led_in')
+        GPIO.output(led_pin,1)
+        time.sleep(1)
+    else:
+        rospy.loginfo('led_off')
+        GPIO.output(led_pin,0)
+
+def listener():
+    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber('chatter', String, led_callback)
+    rospy.spin()
+
+if __name__== '__main__':
+    listener()
+    GPIO.cleanup()
