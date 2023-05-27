@@ -49,6 +49,7 @@ def motor(pin,speed):
 #callback
 def callback(data):
     num=data.data[2:].zfill(6)
+    print(num)
     
     #RM
     if int(num[4])^int(num[1]):
@@ -87,6 +88,7 @@ def callback(data):
     else:
         GPIO.output(RL,0)
         print("RL off")
+    print()
 
 
 def listener():
