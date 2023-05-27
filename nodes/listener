@@ -7,23 +7,36 @@ from std_msgs.msg import String
 import time
 
 led_pin=20
+RM=[17,9,10]
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(led_pin,GPIO.OUT)
 GPIO.output(led_pin,0)
 
-def led_callback(data):
+for pin in RM:
+    GPIO.setup(pin,GPIO.OUT)
+    GPIO.output(pin,0)
+pwm=GPIO.PWM(RM[0], 100)
+pwm.start(0)
+
+
+def callback(data):
     if data.data == "1":
         rospy.loginfo('led_in')
-        GPIO.output(led_pin,1)
+        pwm.ChangeDutyCycle(abs(100))
+        GPIO.output(RM[1],1)
+        GPIO.output(RM[2],0)
         time.sleep(1)
     else:
         rospy.loginfo('led_off')
-        GPIO.output(led_pin,0)
+        pwm.ChangeDutyCycle(abs(100))
+        GPIO.output(RM[1],0)
+        GPIO.output(RM[2],0)
+        time.sleep(1)
 
 def listener():
     rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber('chatter', String, led_callback)
+    rospy.Subscriber('chatter', String, callback)
     rospy.spin()
 
 if __name__== '__main__':
