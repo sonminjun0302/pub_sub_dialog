@@ -45,9 +45,13 @@ def motor(pin,speed):
         GPIO.output(pin[1],0)
         GPIO.output(pin[2],0)
 
-
+FL_IO=0
+FL_num=0
 #callback
 def callback(data):
+    global FL_IO
+    global FL_num
+    
     num=data.data[2:].zfill(6)
     print(num)
     
@@ -74,12 +78,14 @@ def callback(data):
         motor(FM,0)
     
     #FL
-    if int(num[5]):
-        GPIO.output(FL,1)
-        print("FL on")
-    else:
-        GPIO.output(FL,0)
-        print("FL off")
+    if FL_num==0 and int(num[5])==1:
+        if FL_IO==0:
+            GPIO.output(FL,1)
+            FL_IO=1
+        else:
+            GPIO.output(FL,0)
+            FL_IO=0
+    FL_num=int(num[5])
     
     #RL
     if int(num[3]):
