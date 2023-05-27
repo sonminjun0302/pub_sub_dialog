@@ -51,31 +51,31 @@ def callback(data):
     num=data.data[2:].zfill(6)
     
     #RM
-    if num[4]^num[1]:
-        if num[4]==1:
+    if int(num[4])^int(num[1]):
+        if int(num[4])==1:
             motor(RM,100)
-        if num[1]==1:
+        if int(num[1])==1:
             motor(RM,-100)
     else:
         motor(RM,0)
     
     #FM
-    if num[2]^num[0]:
-        if num[0]==1:
+    if int(num[2])^int(num[0]):
+        if int(num[0])==1:
             motor(FM,100)
-        if num[2]==1:
+        if int(num[2])==1:
             motor(FM,-100)
     else:
         motor(FM,0)
     
     #FL
-    if num[5]:
+    if int(num[5]):
         GPIO.output(FL,1)
     else:
         GPIO.output(FL,0)
     
     #RL
-    if num[3]:
+    if int(num[3]):
         GPIO.output(RL,1)
     else:
         GPIO.output(RL,0)
