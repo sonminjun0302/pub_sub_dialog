@@ -48,7 +48,7 @@ def motor(pin,speed):
 
 #callback
 def callback(data):
-    num=data.data[2:]
+    num=data.data[2:].zfill(6)
     
     #RM
     if num[4]^num[1]:
