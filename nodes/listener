@@ -1,43 +1,91 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#listener
 
 import rospy
 import RPi.GPIO as GPIO
 from std_msgs.msg import String
-import time
 
-led_pin=20
+
+#pin setup
+FL=4
+RL=6
+FM=[11,22,27]
 RM=[17,9,10]
 
+#GPIO setup
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(led_pin,GPIO.OUT)
-GPIO.output(led_pin,0)
 
-for pin in RM:
+#FrontLed
+GPIO.setup(FL,GPIO.OUT)
+GPIO.output(FL,0)
+
+#RearLed
+GPIO.setup(RL,GPIO.OUT)
+GPIO.output(RL,0)
+
+#FrontMotor/RearMotor
+for pin in FM+RM:
     GPIO.setup(pin,GPIO.OUT)
     GPIO.output(pin,0)
+
+#motor setup
 pwm=GPIO.PWM(RM[0], 100)
 pwm.start(0)
 
 
-def callback(data):
-    if data.data == "1":
-        rospy.loginfo('led_in')
-        pwm.ChangeDutyCycle(abs(100))
-        GPIO.output(RM[1],1)
-        GPIO.output(RM[2],0)
-        time.sleep(1)
+#motor func
+def motor(pin,speed):
+    pwm.ChangeDutyCycle(abs(speed))
+    if speed<0:
+        GPIO.output(pin[1],0)
+        GPIO.output(pin[2],1)
+    elif speed>0:
+        GPIO.output(pin[1],1)
+        GPIO.output(pin[2],0)
     else:
-        rospy.loginfo('led_off')
-        pwm.ChangeDutyCycle(abs(100))
-        GPIO.output(RM[1],0)
-        GPIO.output(RM[2],0)
-        time.sleep(1)
+        GPIO.output(pin[1],0)
+        GPIO.output(pin[2],0)
+
+
+#callback
+def callback(data):
+    num=data.data[2:]
+    
+    #RM
+    if num[4]^num[1]:
+        if num[4]==1:
+            motor(RM,100)
+        if num[1]==1:
+            motor(RM,-100)
+    else:
+        motor(RM,0)
+    
+    #FM
+    if num[2]^num[0]:
+        if num[0]==1:
+            motor(FM,100)
+        if num[2]==1:
+            motor(FM,-100)
+    else:
+        motor(FM,0)
+    
+    #FL
+    if num[5]:
+        GPIO.output(FL,1)
+    else:
+        GPIO.output(FL,0)
+    
+    #RL
+    if num[3]:
+        GPIO.output(RL,1)
+    else:
+        GPIO.output(RL,0)
+
 
 def listener():
     rospy.init_node('listener', anonymous=True)
     rospy.Subscriber('chatter', String, callback)
     rospy.spin()
+
 
 if __name__== '__main__':
     listener()
