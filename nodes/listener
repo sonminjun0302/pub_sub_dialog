@@ -54,31 +54,39 @@ def callback(data):
     if int(num[4])^int(num[1]):
         if int(num[4])==1:
             motor(RM,100)
+            print("FORWARD/RM 100")
         if int(num[1])==1:
             motor(RM,-100)
+            print("BACKWARD/RM -100")
     else:
         motor(RM,0)
     
     #FM
     if int(num[2])^int(num[0]):
         if int(num[0])==1:
-            motor(FM,100)
-        if int(num[2])==1:
             motor(FM,-100)
+            print("RIGHT/FM -100")
+        if int(num[2])==1:
+            motor(FM,100)
+            print("LEFT/RM 100")
     else:
         motor(FM,0)
     
     #FL
     if int(num[5]):
         GPIO.output(FL,1)
+        print("FL on")
     else:
         GPIO.output(FL,0)
+        print("FL off")
     
     #RL
     if int(num[3]):
         GPIO.output(RL,1)
+        print("RL on")
     else:
         GPIO.output(RL,0)
+        print("RL off")
 
 
 def listener():
